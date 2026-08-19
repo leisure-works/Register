@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candy Versus — Tạo tài khoản</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#07070b;
+    --bg-1:#0c0d14;
+    --panel:#101119;
+    --line: rgba(255,255,255,0.08);
+    --text-0:#f2f3f7;
+    --text-1:#9a9bb0;
+    --text-2:#5c5d75;
+    --neon-pink:#ff2ec2;
+    --neon-cyan:#33f6e0;
+    --neon-violet:#7c4dff;
+    --danger:#ff5470;
+    --ok:#3df5a3;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(124,77,255,0.16), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(255,46,194,0.10), transparent 55%),
+      var(--bg-0);
+    color:var(--text-0);
+    font-family:'Space Grotesk', sans-serif;
+    min-height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* faint moving scanline grid, signature element */
+  .grid-field{
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(circle at 50% 30%, black, transparent 75%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .scanbeam{
+    position:fixed; left:0; right:0; height:140px;
+    background:linear-gradient(180deg, transparent, rgba(51,246,224,0.05), transparent);
+    animation: sweep 9s linear infinite;
+    pointer-events:none;
+    z-index:0;
+  }
+  @keyframes sweep{
+    0%{ top:-140px; }
+    100%{ top:110%; }
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:920px;
+    display:grid;
+    grid-template-columns:1.05fr 1fr;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 30px 80px -30px rgba(0,0,0,0.7);
+  }
+
+  /* left brand pane */
+  .brand{
+    padding:48px 40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    background:
+      linear-gradient(160deg, rgba(124,77,255,0.14), rgba(255,46,194,0.06) 60%, transparent),
+      var(--bg-1);
+    border-right:1px solid var(--line);
+    position:relative;
+  }
+  .brand::after{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 26px, rgba(255,255,255,0.02) 26px 27px);
+    pointer-events:none;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--neon-cyan);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--neon-cyan);
+    box-shadow:0 0 10px var(--neon-cyan);
+  }
+
+  .brand h1{
+    font-size:38px;
+    line-height:1.08;
+    margin:18px 0 0;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .brand h1 span{
+    background:linear-gradient(90deg, var(--neon-pink), var(--neon-violet) 60%, var(--neon-cyan));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .brand p{
+    color:var(--text-1);
+    font-size:14.5px;
+    line-height:1.6;
+    margin-top:16px;
+    max-width:34ch;
+  }
+
+  .stat-row{
+    display:flex;
+    gap:22px;
+    margin-top:36px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .stat b{
+    display:block;
+    font-size:20px;
+    color:var(--text-0);
+  }
+  .stat span{
+    font-size:10.5px;
+    color:var(--text-2);
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+  }
+
+  .brand-foot{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--text-2);
+    letter-spacing:0.05em;
+    margin-top:40px;
+  }
+
+  /* right form pane */
+  .form-pane{
+    padding:48px 44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:var(--panel);
+  }
+
+  .form-pane h2{
+    font-size:22px;
+    margin:0 0 6px;
+    font-weight:600;
+  }
+  .form-pane .sub{
+    color:var(--text-1);
+    font-size:13.5px;
+    margin-bottom:28px;
+  }
+
+  form{ display:flex; flex-direction:column; gap:16px; }
+
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-2);
+  }
+  .field input{
+    background:#0a0b12;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:13px 14px;
+    color:var(--text-0);
+    font-size:14.5px;
+    font-family:'Space Grotesk', sans-serif;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input::placeholder{ color:var(--text-2); }
+  .field input:focus{
+    border-color:var(--neon-cyan);
+    box-shadow:0 0 0 3px rgba(51,246,224,0.12);
+  }
+  .field .hint{
+    font-size:11.5px;
+    color:var(--text-2);
+  }
+
+  .submit-btn{
+    margin-top:6px;
+    border:none;
+    border-radius:10px;
+    padding:14px 18px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    color:#08050c;
+    background:linear-gradient(90deg, var(--neon-cyan), var(--neon-violet));
+    cursor:pointer;
+    transition:transform .12s ease, filter .12s ease;
+    position:relative;
+  }
+  .submit-btn:hover{ filter:brightness(1.08); }
+  .submit-btn:active{ transform:translateY(1px); }
+  .submit-btn:disabled{
+    opacity:0.55;
+    cursor:not-allowed;
+    filter:none;
+  }
+
+  .status{
+    min-height:20px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    margin-top:2px;
+  }
+  .status.ok{ color:var(--ok); }
+  .status.err{ color:var(--danger); }
+  .status.pending{ color:var(--text-1); }
+
+  .switch-line{
+    margin-top:22px;
+    font-size:13px;
+    color:var(--text-1);
+    text-align:center;
+  }
+  .switch-line a{
+    color:var(--neon-cyan);
+    text-decoration:none;
+    cursor:pointer;
+  }
+  .switch-line a:hover{ text-decoration:underline; }
+
+  @media (max-width: 760px){
+    .wrap{ grid-template-columns:1fr; }
+    .brand{ border-right:none; border-bottom:1px solid var(--line); padding:36px 28px; }
+    .form-pane{ padding:36px 28px; }
+    .brand h1{ font-size:30px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .scanbeam{ animation:none; display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-field"></div>
+<div class="scanbeam"></div>
+
+<div class="wrap">
+  <div class="brand">
+    <div>
+      <div class="eyebrow">Candy Versus · PvP Mod</div>
+      <h1>Bước vào <span>đấu trường</span> Geometry Dash.</h1>
+      <p>Tạo tài khoản để lưu Elo, xem lịch sử đấu và đồng bộ tiến trình giữa mod, web và Discord.</p>
+
+      <div class="stat-row">
+        <div class="stat"><b>1v1</b><span>Ranked PvP</span></div>
+        <div class="stat"><b>Elo</b><span>Dynamic K-factor</span></div>
+        <div class="stat"><b>Live</b><span>Sync gameplay</span></div>
+      </div>
+    </div>
+
+    <div class="brand-foot">HOMELESS TEAM // CANDY-VERSUS.MOD</div>
+  </div>
+
+  <div class="form-pane">
+    <h2>Tạo tài khoản</h2>
+    <div class="sub">Username này sẽ dùng để đăng nhập trong game.</div>
+
+    <form id="registerForm">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="vd: neongd1667" autocomplete="username" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+">
+        <div class="hint">3–20 ký tự, chỉ chữ/số/gạch dưới.</div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="ban@example.com" autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Mật khẩu</label>
+        <input type="password" id="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" required minlength="6">
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Tạo tài khoản</button>
+      <div class="status" id="statusMsg"></div>
+    </form>
+
+    <div class="switch-line">
+      Đã có tài khoản? <a href="#" id="switchToLogin">Đăng nhập trong game bằng username/password.</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const SUPABASE_URL = "https://vwsmthfwhwzzlqtzsjvp.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3c210aGZ3aHd6emxxdHpzanZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzcwNzIsImV4cCI6MjEwMjcxMzA3Mn0.Whzscv-OuixVRBpplx1_t_73hnLdv9ktEylUxEsOC3c";
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const form = document.getElementById("registerForm");
+  const statusEl = document.getElementById("statusMsg");
+  const submitBtn = document.getElementById("submitBtn");
+
+  function setStatus(msg, type){
+    statusEl.textContent = msg;
+    statusEl.className = "status " + (type || "");
+  }
+
+  // Check username đã tồn tại chưa trước khi đăng ký
+  async function isUsernameTaken(username){
+    const { data, error } = await sb
+      .from("profiles")
+      .select("id")
+      .eq("username", username)
+      .maybeSingle();
+    if (error) {
+      console.error("check username error", error);
+      return false; // fail-open, để backend/DB constraint chặn nếu cần
+    }
+    return !!data;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    submitBtn.disabled = true;
+    setStatus("Đang kiểm tra username...", "pending");
+
+    const taken = await isUsernameTaken(username);
+    if (taken) {
+      setStatus("Username này đã có người dùng.", "err");
+      submitBtn.disabled = false;
+      return;
+    }
+
+    setStatus("Đang tạo tài khoản...", "pending");
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { username } // metadata này được trigger DB đọc để tạo dòng profiles
+      }
+    });
+
+    if (error) {
+      setStatus("Lỗi: " + error.message, "err");
+      submitBtn.disabled = false;
+      return;
+    }
+
+    setStatus("Tạo tài khoản thành công! Giờ vào game, mở Candy Versus và đăng nhập bằng username + password vừa tạo.", "ok");
+    form.reset();
+    submitBtn.disabled = false;
+  });
+</script>
+
+</body>
+</html>
